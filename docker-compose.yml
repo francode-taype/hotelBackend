@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app_hotel:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://hotel_db:3306/hotel_database?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: ${DB_USER_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SECURITY_USER_NAME: ${SECURITY_USER_NAME}
+      SECURITY_USER_PASSWORD: ${SECURITY_USER_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+    restart: unless-stopped
+    depends_on:
+      hotel_db:
+        condition: service_healthy
+  hotel_db:
+    image: mysql:8.0.33
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: hotel_database
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
