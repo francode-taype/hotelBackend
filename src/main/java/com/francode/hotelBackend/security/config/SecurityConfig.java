@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/signin").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll() // Permitir acceso público a Swagger UI
                         .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
