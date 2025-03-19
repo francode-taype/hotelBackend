@@ -2,6 +2,7 @@ package com.francode.hotelBackend.business.services.impl;
 
 import com.francode.hotelBackend.business.mapper.RoomMapper;
 import com.francode.hotelBackend.business.services.interfaces.RoomService;
+import com.francode.hotelBackend.business.services.interfaces.WebSocketService;
 import com.francode.hotelBackend.domain.entity.FloorRooms;
 import com.francode.hotelBackend.domain.entity.Room;
 import com.francode.hotelBackend.domain.entity.RoomType;
@@ -29,14 +30,16 @@ public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
     private final JpaRoomTypeRepository roomTypeRepository;
     private final JpaFloorRoomsRepository floorRoomsRepository;
+    private final WebSocketService webSocketService;
 
     @Autowired
     public RoomServiceImpl(JpaRoomRepository roomRepository, RoomMapper roomMapper,
-                           JpaRoomTypeRepository roomTypeRepository, JpaFloorRoomsRepository floorRoomsRepository) {
+                           JpaRoomTypeRepository roomTypeRepository, JpaFloorRoomsRepository floorRoomsRepository, WebSocketService webSocketService) {
         this.roomRepository = roomRepository;
         this.roomMapper = roomMapper;
         this.roomTypeRepository = roomTypeRepository;
         this.floorRoomsRepository = floorRoomsRepository;
+        this.webSocketService = webSocketService;
     }
 
     @Override
@@ -67,8 +70,12 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomMapper.toEntity(roomRequestDTO);
         room.setRoomType(roomType);
         room.setFloor(floor);
+        Room savedRoom = roomRepository.save(room);
 
-        return roomMapper.toResponseDTO(roomRepository.save(room));
+        // Enviar notificación de la creación
+        webSocketService.sendRoomUpdate(savedRoom);
+
+        return roomMapper.toResponseDTO(savedRoom);
     }
 
     @Override
@@ -93,8 +100,12 @@ public class RoomServiceImpl implements RoomService {
         roomMapper.updateEntityFromDTO(roomRequestDTO, existingRoom);
         existingRoom.setRoomType(roomType);
         existingRoom.setFloor(floor);
+        Room updatedRoom = roomRepository.save(existingRoom);
 
-        return roomMapper.toResponseDTO(roomRepository.save(existingRoom));
+        // Enviar notificación a través de WebSocket
+        webSocketService.sendRoomUpdate(updatedRoom);
+
+        return roomMapper.toResponseDTO(existingRoom);
     }
 
     @Override
@@ -107,6 +118,8 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> new NotFoundException("No se encontró una habitación con el ID: " + id));
 
         roomRepository.delete(room);
+        // Enviar notificación a través de WebSocket
+        webSocketService.sendRoomDeletionNotification(room);
     }
 
     @Override
