@@ -38,7 +38,7 @@ public class Room {
     @Column(name = "precio_horario", nullable = false)
     private Double hourlyPrice;
 
-    @Column(name = "estado", nullable = false, length = 10)
+    @Column(name = "estado", nullable = false, length = 50)
     private String status;
 }
 
