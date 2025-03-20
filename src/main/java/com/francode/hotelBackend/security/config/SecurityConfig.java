@@ -1,7 +1,6 @@
 package com.francode.hotelBackend.security.config;
 
 import com.francode.hotelBackend.business.services.auth.UserDetailsServiceImpl;
-import com.francode.hotelBackend.security.custom.CustomAccessDeniedHandler;
 import com.francode.hotelBackend.security.custom.CustomAuthEntryPoint;
 import com.francode.hotelBackend.security.jwt.AuthTokenFilter;
 import org.springframework.context.annotation.Bean;
@@ -30,12 +29,10 @@ public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final CustomAuthEntryPoint authEntryPoint;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, CustomAuthEntryPoint authEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, CustomAuthEntryPoint authEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.authEntryPoint = authEntryPoint;
-        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -45,7 +42,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Sesiones sin estado

@@ -65,6 +65,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // Manejo de excepción 403 - Sin permisos
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "403");
+        response.put("message", "No tiene permisos para acceder a este recurso.");
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDTO> handleGlobalException(Exception ex, WebRequest request) {
         ApiErrorDTO errorDTO = new ApiErrorDTO(
