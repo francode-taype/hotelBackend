@@ -2,19 +2,25 @@ package com.francode.hotelBackend.business.mapper;
 
 import com.francode.hotelBackend.business.mapper.generic.Mapper;
 import com.francode.hotelBackend.domain.entity.Reservation;
-import com.francode.hotelBackend.presentation.dto.request.ReservationRequestDTO;
+import com.francode.hotelBackend.presentation.dto.request.Reservation.ReservationRequestDTO;
 import com.francode.hotelBackend.presentation.dto.response.ReservationResponseDTO;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @org.mapstruct.Mapper(componentModel = "spring")
 public interface ReservationMapper extends Mapper<ReservationRequestDTO, ReservationResponseDTO, Reservation> {
 
-    @Override
+    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "room", ignore = true)
     Reservation toEntity(ReservationRequestDTO dto);
 
-    @Override
+    @Mapping(target = "clientId", source = "client.id")
+    @Mapping(target = "roomId", source = "room.id")
+    @Mapping(target = "payments", source = "payments")
     ReservationResponseDTO toResponseDTO(Reservation entity);
 
-    @Override
+    @Mapping(target = "client", ignore = true)
+    @Mapping(target = "room", ignore = true)
     void updateEntityFromDTO(ReservationRequestDTO dto, @MappingTarget Reservation entity);
+
 }

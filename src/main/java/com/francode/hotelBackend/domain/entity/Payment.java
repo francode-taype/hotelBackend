@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +26,7 @@ public class Payment {
     private Reservation reservation;
 
     @Column(name = "monto", nullable = false)
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(name = "metodo_pago", nullable = false, length = 20)
     private String paymentMethod;

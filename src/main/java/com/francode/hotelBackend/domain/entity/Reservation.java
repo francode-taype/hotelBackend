@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +36,22 @@ public class Reservation {
     @Column(name = "fecha_check_out", nullable = false)
     private LocalDateTime checkOutDate;
 
-    @Column(name = "estado", nullable = false, length = 20)
+    @Column(name = "tipo_tarifa")
+    private String rateType;
+
+    @Column(name = "precio_tarifa", nullable = false)
+    private BigDecimal priceRate;
+
+    @Column(name = "precio_adicional", nullable = true)
+    private BigDecimal additionalPrice;
+
+    @Column(name = "precio_total", nullable = false)
+    private BigDecimal totalPrice;
+
+    @Column(name = "comentarios", nullable = true, length = 255)
+    private String comments;
+
+    @Column(name = "estado")
     private String status;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
