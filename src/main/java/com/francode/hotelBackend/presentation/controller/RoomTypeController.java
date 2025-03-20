@@ -40,7 +40,7 @@ public class RoomTypeController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/room-type/{id}")
-    public ResponseEntity<RoomTypeResponseDTO> update(@PathVariable Long id, @Valid @RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
+    public ResponseEntity<RoomTypeResponseDTO> update(@Valid @PathVariable Long id, @Valid @RequestBody RoomTypeRequestDTO roomTypeRequestDTO) {
         RoomTypeResponseDTO roomTypeResponseDTO = roomTypeService.update(id, roomTypeRequestDTO);
         return roomTypeResponseDTO != null ? ResponseEntity.ok(roomTypeResponseDTO) : ResponseEntity.notFound().build();
     }

@@ -3,6 +3,7 @@ package com.francode.hotelBackend.presentation.controller;
 import com.francode.hotelBackend.business.services.interfaces.RoomService;
 import com.francode.hotelBackend.presentation.dto.request.RoomRequestDTO;
 import com.francode.hotelBackend.presentation.dto.response.RoomResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class RoomController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/room")
-    public ResponseEntity<RoomResponseDTO> create(@RequestBody RoomRequestDTO roomRequestDTO) {
+    public ResponseEntity<RoomResponseDTO> create(@Valid  @RequestBody RoomRequestDTO roomRequestDTO) {
         RoomResponseDTO roomResponseDTO = roomService.create(roomRequestDTO);
         return ResponseEntity.status(201).body(roomResponseDTO);
     }
@@ -39,7 +40,7 @@ public class RoomController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/room/{id}")
-    public ResponseEntity<RoomResponseDTO> update(@PathVariable Long id, @RequestBody RoomRequestDTO roomRequestDTO) {
+    public ResponseEntity<RoomResponseDTO> update(@Valid @PathVariable Long id, @RequestBody RoomRequestDTO roomRequestDTO) {
         RoomResponseDTO roomResponseDTO = roomService.update(id, roomRequestDTO);
         return roomResponseDTO != null ? ResponseEntity.ok(roomResponseDTO) : ResponseEntity.notFound().build();
     }

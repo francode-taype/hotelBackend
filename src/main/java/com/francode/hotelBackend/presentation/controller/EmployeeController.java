@@ -3,6 +3,7 @@ package com.francode.hotelBackend.presentation.controller;
 import com.francode.hotelBackend.business.services.interfaces.EmployeeService;
 import com.francode.hotelBackend.presentation.dto.request.EmployeeRequestDTO;
 import com.francode.hotelBackend.presentation.dto.response.EmployeeResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/employee")
-    public ResponseEntity<EmployeeResponseDTO> create(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
+    public ResponseEntity<EmployeeResponseDTO> create(@Valid @RequestBody EmployeeRequestDTO employeeRequestDTO) {
         EmployeeResponseDTO employeeResponseDTO = employeeService.create(employeeRequestDTO);
         return ResponseEntity.status(201).body(employeeResponseDTO);
     }
@@ -39,7 +40,7 @@ public class EmployeeController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/employee/{id}")
-    public ResponseEntity<EmployeeResponseDTO> update(@PathVariable Long id, @RequestBody EmployeeRequestDTO employeeRequestDTO) {
+    public ResponseEntity<EmployeeResponseDTO> update(@Valid @PathVariable Long id, @RequestBody EmployeeRequestDTO employeeRequestDTO) {
         EmployeeResponseDTO employeeResponseDTO = employeeService.update(id, employeeRequestDTO);
         return employeeResponseDTO != null ? ResponseEntity.ok(employeeResponseDTO) : ResponseEntity.notFound().build();
     }

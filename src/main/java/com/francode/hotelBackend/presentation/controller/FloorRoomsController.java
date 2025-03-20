@@ -3,6 +3,7 @@ package com.francode.hotelBackend.presentation.controller;
 import com.francode.hotelBackend.business.services.interfaces.FloorRoomsService;
 import com.francode.hotelBackend.presentation.dto.request.FloorRoomsRequestDTO;
 import com.francode.hotelBackend.presentation.dto.response.FloorRoomsResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class FloorRoomsController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/floor-room")
-    public ResponseEntity<FloorRoomsResponseDTO> create(@RequestBody FloorRoomsRequestDTO floorRoomsRequestDTO) {
+    public ResponseEntity<FloorRoomsResponseDTO> create(@Valid  @RequestBody FloorRoomsRequestDTO floorRoomsRequestDTO) {
         FloorRoomsResponseDTO floorRoomsResponseDTO = floorRoomsService.create(floorRoomsRequestDTO);
         return ResponseEntity.status(201).body(floorRoomsResponseDTO);
     }
@@ -39,7 +40,7 @@ public class FloorRoomsController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/floor-room/{id}")
-    public ResponseEntity<FloorRoomsResponseDTO> update(@PathVariable Long id, @RequestBody FloorRoomsRequestDTO floorRoomsRequestDTO) {
+    public ResponseEntity<FloorRoomsResponseDTO> update(@Valid@PathVariable Long id, @RequestBody FloorRoomsRequestDTO floorRoomsRequestDTO) {
         FloorRoomsResponseDTO floorRoomsResponseDTO = floorRoomsService.update(id, floorRoomsRequestDTO);
         return floorRoomsResponseDTO != null ? ResponseEntity.ok(floorRoomsResponseDTO) : ResponseEntity.notFound().build();
     }
