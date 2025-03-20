@@ -11,12 +11,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoginRequest {
-    @NotBlank
-    @Email
+    @NotBlank(message = "El correo electrónico no puede estar vacío.")
+    @Email(message = "El formato del correo electrónico es inválido.")
     private String email;
 
-    @NotBlank
-    @Size(min = 6, max = 40)
+    @NotBlank(message = "La contraseña no puede estar vacía.")
+    @Size(min = 6, max = 40, message = "La contraseña debe tener entre 6 y 40 caracteres.")
     private String password;
 }
 
