@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@CheckOutAfterCheckIn
+@EndDateAfterStartDate
 public class ReservationRequestDTO {
 
     @NotNull(message = "La ID del cliente no puede ser nula")
@@ -18,14 +18,15 @@ public class ReservationRequestDTO {
     @NotNull(message = "La ID de la habitación no puede ser nula")
     private Long roomId;
 
-    @NotNull(message = "La fecha de entrada no puede ser nula")
-    private LocalDateTime checkInDate;
+    @NotNull(message = "La fecha de inicio no puede ser nula")
+    private LocalDateTime startDate;
 
-    @NotNull(message = "La fecha de salida no puede ser nula")
-    @FutureOrPresent(message = "La fecha de salida debe ser en el futuro o la fecha actual")
-    private LocalDateTime checkOutDate;
+    @NotNull(message = "La fecha de fin no puede ser nula")
+    private LocalDateTime endDate;
 
-    @NotEmpty(message = "El estado no puede estar vacío")
+    @NotNull(message = "El estado de la reserva no puede ser nulo")
+    @Pattern(regexp = "^(PENDIENTE|CONFIRMADA|EN_EL_CHECK_IN|EN_EL_CHECK_OUT|CANCELADA|COMPLETADA|NO_SE_PRESENTO)$",
+            message = "El estado debe ser uno de los siguientes: PENDIENTE, CONFIRMADA, EN_EL_CHECK_IN, EN_EL_CHECK_OUT, CANCELADA, COMPLETADA, NO_SE_PRESENTO")
     private String status;
 
     @NotNull(message = "El tipo de tarifa no puede ser nulo")
@@ -34,7 +35,7 @@ public class ReservationRequestDTO {
 
     @NotNull(message = "El precio de la tarifa no puede ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio de la tarifa debe ser mayor a 0")
-    private BigDecimal priceRate; // Precio según el tipo de tarifa
+    private BigDecimal priceRate;
 
     @NotNull(message = "El precio total no puede ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio total debe ser mayor a 0")

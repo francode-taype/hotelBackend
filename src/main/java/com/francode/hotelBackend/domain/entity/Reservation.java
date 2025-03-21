@@ -30,13 +30,13 @@ public class Reservation {
     @JoinColumn(name = "habitacion_id", nullable = false)
     private Room room;
 
-    @Column(name = "fecha_check_in", nullable = false)
-    private LocalDateTime checkInDate;
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDateTime startDate;
 
-    @Column(name = "fecha_check_out", nullable = false)
-    private LocalDateTime checkOutDate;
+    @Column(name = "fecha_fin", nullable = false)
+    private LocalDateTime endDate;
 
-    @Column(name = "tipo_tarifa")
+    @Column(name = "tipo_tarifa", nullable = false)
     private String rateType;
 
     @Column(name = "precio_tarifa", nullable = false)
@@ -51,8 +51,18 @@ public class Reservation {
     @Column(name = "comentarios", nullable = true, length = 255)
     private String comments;
 
-    @Column(name = "estado")
-    private String status;
+    @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
+    @Column(name = "fecha_check_in")
+    private LocalDateTime checkInDate;
+
+    @Column(name = "fecha_check_out")
+    private LocalDateTime checkOutDate;
+
+    @Column(name = "fecha_cancelacion")
+    private LocalDateTime cancellationDate;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments;

@@ -14,12 +14,16 @@ public class ReservationResponseDTO {
     private Long id;
     private Long clientId;
     private Long roomId;
-    private LocalDateTime checkInDate;
-    private LocalDateTime checkOutDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private String status;
     private String comments;
     private String rateType;
     private BigDecimal priceRate;
+    private BigDecimal additionalPrice;
     private BigDecimal totalPrice;
+    private LocalDateTime checkInDate;
+    private LocalDateTime checkOutDate;
+    private LocalDateTime cancellationDate;
     private List<PaymentResponseDTO> payments;
 }
