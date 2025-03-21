@@ -1,9 +1,11 @@
 package com.francode.hotelBackend.business.services.impl;
 
+import com.francode.hotelBackend.business.mapper.ReservationMapper;
 import com.francode.hotelBackend.business.mapper.RoomMapper;
 import com.francode.hotelBackend.business.services.interfaces.RoomService;
 import com.francode.hotelBackend.business.services.interfaces.WebSocketService;
 import com.francode.hotelBackend.domain.entity.FloorRooms;
+import com.francode.hotelBackend.domain.entity.Reservation;
 import com.francode.hotelBackend.domain.entity.Room;
 import com.francode.hotelBackend.domain.entity.RoomType;
 import com.francode.hotelBackend.exceptions.custom.NoRecordsException;
@@ -13,6 +15,7 @@ import com.francode.hotelBackend.persistence.repository.JpaFloorRoomsRepository;
 import com.francode.hotelBackend.persistence.repository.JpaRoomRepository;
 import com.francode.hotelBackend.persistence.repository.JpaRoomTypeRepository;
 import com.francode.hotelBackend.presentation.dto.request.RoomRequestDTO;
+import com.francode.hotelBackend.presentation.dto.response.Reservation.ReservationInfoDTO;
 import com.francode.hotelBackend.presentation.dto.response.RoomResponseDTO;
 import jakarta.persistence.criteria.Path;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,15 +36,18 @@ public class RoomServiceImpl implements RoomService {
     private final JpaRoomTypeRepository roomTypeRepository;
     private final JpaFloorRoomsRepository floorRoomsRepository;
     private final WebSocketService webSocketService;
+    private final ReservationMapper reservationMapper;
+
 
     @Autowired
     public RoomServiceImpl(JpaRoomRepository roomRepository, RoomMapper roomMapper,
-                           JpaRoomTypeRepository roomTypeRepository, JpaFloorRoomsRepository floorRoomsRepository, WebSocketService webSocketService) {
+                           JpaRoomTypeRepository roomTypeRepository, JpaFloorRoomsRepository floorRoomsRepository, WebSocketService webSocketService, ReservationMapper reservationMapper) {
         this.roomRepository = roomRepository;
         this.roomMapper = roomMapper;
         this.roomTypeRepository = roomTypeRepository;
         this.floorRoomsRepository = floorRoomsRepository;
         this.webSocketService = webSocketService;
+        this.reservationMapper = reservationMapper;
     }
 
     @Override
@@ -144,5 +152,48 @@ public class RoomServiceImpl implements RoomService {
         }
 
         return rooms.map(roomMapper::toResponseDTO);
+    }
+
+    @Override
+    public Page<RoomResponseDTO> findAvailableRoomsForDates(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        if (startDate == null || endDate == null) {
+            throw new ValidationException("Las fechas de inicio y fin no pueden ser nulas.");
+        }
+
+        // Obtener las habitaciones disponibles en el rango de fechas
+        Page<Room> rooms = roomRepository.findAvailableRoomsForDates(startDate, endDate, pageable);
+
+        // Verificar si no hay habitaciones disponibles
+        if (rooms.isEmpty()) {
+            throw new NoRecordsException("No hay habitaciones disponibles para las fechas seleccionadas.");
+        }
+
+        // Mapear las habitaciones a RoomResponseDTO y devolverlas
+        return rooms.map(roomMapper::toResponseDTO);
+    }
+
+    @Override
+    public List<ReservationInfoDTO> findReservationsInfoForRoom(Long roomId) {
+        if (roomId == null) {
+            throw new ValidationException("El ID de la habitación no puede ser nulo.");
+        }
+
+        // Obtener las reservas futuras asociadas a la habitación
+        List<Reservation> reservations = roomRepository.findReservationsByRoomIdWithFutureDates(roomId);
+
+        if (reservations.isEmpty()) {
+            throw new NotFoundException("No se encontraron reservas futuras para la habitación con ID: " + roomId);
+        }
+
+        // Usar el mapper para mapear las reservas a ReservationInfoDTO
+        return reservationMapper.toReservationInfoDTOList(reservations);
+    }
+
+    @Override
+    public void updateRoomStatus(Long roomId, String status) {
+        if (roomId == null || status == null) {
+            throw new ValidationException("El ID de la habitación y el estado no pueden ser nulos.");
+        }
+        roomRepository.updateRoomStatus(roomId, status);
     }
 }
