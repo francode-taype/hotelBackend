@@ -10,6 +10,8 @@ public class CleaningResponseDTO {
     private Long id;
     private Long employeeId;
     private Long roomId;
-    private LocalDateTime cleaningDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private LocalDateTime cancellationDate;
     private String status;
 }

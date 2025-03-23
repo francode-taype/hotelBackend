@@ -27,8 +27,14 @@ public class Cleaning {
     @JoinColumn(name = "habitacion_id", nullable = false)
     private Room room;
 
-    @Column(name = "fecha_limpieza", nullable = false)
-    private LocalDateTime cleaningDate;
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(name = "fecha_fin")
+    private LocalDateTime endDate;
+
+    @Column(name = "fecha_cancelacion")
+    private LocalDateTime cancellationDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
