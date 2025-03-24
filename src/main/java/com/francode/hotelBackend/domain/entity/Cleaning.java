@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,4 +40,7 @@ public class Cleaning {
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
     private CleaningStatus status;
+
+    @OneToMany(mappedBy = "cleaning", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Incident> incidents;
 }
