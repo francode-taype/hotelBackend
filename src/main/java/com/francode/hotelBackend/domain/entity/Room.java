@@ -39,6 +39,11 @@ public class Room {
     private Double hourlyPrice;
 
     @Column(name = "estado", nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EStatusRoom status;
+
+    @Column(name = "estado_limpieza")
+    @Enumerated(EnumType.STRING)
+    private EStatusCleaningRoom statusCleaning;
 }
 

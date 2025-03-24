@@ -13,6 +13,7 @@ public class RoomResponseDTO {
     private Double dailyPrice;
     private Double hourlyPrice;
     private String status;
+    private String statusCleaning;
     private Long roomTypeId;
     private Long roomFloorNumber;
 }

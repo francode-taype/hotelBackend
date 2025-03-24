@@ -12,13 +12,19 @@ public interface RoomMapper {
 
     @Mapping(target = "roomType", ignore = true)
     @Mapping(target = "floor", ignore = true)
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "statusCleaning", source = "statusCleaning")
     Room toEntity(RoomRequestDTO dto);
 
     @Mapping(target = "roomTypeId", source = "roomType.id")
     @Mapping(target = "roomFloorNumber", source = "floor.number")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "statusCleaning", source = "statusCleaning")
     RoomResponseDTO toResponseDTO(Room entity);
 
     @Mapping(target = "roomType", ignore = true)
     @Mapping(target = "floor", ignore = true)
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "statusCleaning", source = "statusCleaning")
     void updateEntityFromDTO(RoomRequestDTO dto, @MappingTarget Room entity);
 }
