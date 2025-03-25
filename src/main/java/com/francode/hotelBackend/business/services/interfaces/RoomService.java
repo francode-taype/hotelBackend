@@ -20,4 +20,6 @@ public interface RoomService extends CrudGenericService<Room, RoomRequestDTO, Ro
 
     // Actualizar solo el estado de una habitación
     void updateRoomStatus(Long roomId, String status);
+
+    Page<RoomResponseDTO> findRoomsWithCleaningStatus(Pageable pageable);
 }

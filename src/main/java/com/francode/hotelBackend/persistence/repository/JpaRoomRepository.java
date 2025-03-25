@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface JpaRoomRepository extends JpaRepository<Room, Long>, JpaSpecificationExecutor<Room> {
@@ -45,4 +44,7 @@ public interface JpaRoomRepository extends JpaRepository<Room, Long>, JpaSpecifi
     @Transactional
     @Query("UPDATE Room r SET r.status = :status WHERE r.id = :roomId")
     void updateRoomStatus(Long roomId, String status);
+
+    @Query("SELECT r FROM Room r WHERE r.statusCleaning IN ('PARA_LIMPIAR', 'LIMPIANDO')")
+    Page<Room> findRoomsWithCleaningStatus(Pageable pageable);
 }

@@ -93,4 +93,12 @@ public class RoomController {
         roomService.updateRoomStatus(roomId, status);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLEANER')")
+    @GetMapping("/rooms/cleaning-status")
+    public ResponseEntity<Page<RoomResponseDTO>> findRoomsWithCleaningStatus(Pageable pageable) {
+        Page<RoomResponseDTO> roomResponseDTOs = roomService.findRoomsWithCleaningStatus(pageable);
+        return ResponseEntity.ok(roomResponseDTOs);
+    }
+
 }

@@ -4,10 +4,7 @@ import com.francode.hotelBackend.business.mapper.ReservationMapper;
 import com.francode.hotelBackend.business.mapper.RoomMapper;
 import com.francode.hotelBackend.business.services.interfaces.RoomService;
 import com.francode.hotelBackend.business.services.interfaces.WebSocketService;
-import com.francode.hotelBackend.domain.entity.FloorRooms;
-import com.francode.hotelBackend.domain.entity.Reservation;
-import com.francode.hotelBackend.domain.entity.Room;
-import com.francode.hotelBackend.domain.entity.RoomType;
+import com.francode.hotelBackend.domain.entity.*;
 import com.francode.hotelBackend.exceptions.custom.NoRecordsException;
 import com.francode.hotelBackend.exceptions.custom.NotFoundException;
 import com.francode.hotelBackend.exceptions.custom.ValidationException;
@@ -196,4 +193,15 @@ public class RoomServiceImpl implements RoomService {
         }
         roomRepository.updateRoomStatus(roomId, status);
     }
+
+    @Override
+    public Page<RoomResponseDTO> findRoomsWithCleaningStatus(Pageable pageable) {
+        Page<Room> rooms = roomRepository.findRoomsWithCleaningStatus(pageable);
+        if (rooms.isEmpty()) {
+            throw new NoRecordsException("No hay habitaciones con los estados de limpieza 'PARA_LIMPIAR' o 'LIMPIANDO'.");
+        }
+
+        return rooms.map(roomMapper::toResponseDTO);
+    }
+
 }
