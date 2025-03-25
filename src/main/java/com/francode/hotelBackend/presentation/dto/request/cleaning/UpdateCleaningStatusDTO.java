@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class updateCleaningStatusDTO {
+public class UpdateCleaningStatusDTO {
     @NotNull(message = "El estado de limpieza no puede ser nulo")
     @Pattern(regexp = "^(EN_PROCESO|TERMINADO|CANCELADO)$", message = "El estado debe ser uno de los siguientes: EN_PROCESO, TERMINADO, CANCELADO")
     private String status;
