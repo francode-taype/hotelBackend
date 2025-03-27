@@ -69,4 +69,11 @@ public class EmployeeController {
         Optional<EmployeeResponseDTO> employeeResponseDTO = employeeService.findByDocumentNumber(documentNumber);
         return employeeResponseDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/employee/user/{userId}")
+    public ResponseEntity<EmployeeResponseDTO> findByUserAppId(@PathVariable Long userId) {
+        Optional<EmployeeResponseDTO> employeeResponseDTO = employeeService.findByUserAppId(userId);
+        return employeeResponseDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

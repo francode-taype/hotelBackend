@@ -149,4 +149,17 @@ public class EmployeeServiceImpl implements EmployeeService {
                     throw new NotFoundException("No se encontró un empleado con el número de documento: " + documentNumber);
                 });
     }
+
+    @Override
+    public Optional<EmployeeResponseDTO> findByUserAppId(Long userId) {
+        if (userId == null) {
+            throw new ValidationException("El ID de usuario no puede ser nulo.");
+        }
+
+        return employeeRepository.findByUserAppId(userId)
+                .map(employeeMapper::toResponseDTO)
+                .or(() -> {
+                    throw new NotFoundException("No se encontró un empleado asociado al usuario con ID: " + userId);
+                });
+    }
 }
