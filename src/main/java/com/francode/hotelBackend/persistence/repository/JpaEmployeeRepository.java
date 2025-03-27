@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface JpaEmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
     Optional<Employee> findByDocumentNumber(String documentNumber);
+    Optional<Employee> findByUserAppId(Long userId);
 }

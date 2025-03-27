@@ -1,9 +1,11 @@
 package com.francode.hotelBackend.business.services.auth;
 
 import com.francode.hotelBackend.domain.entity.ERole;
+import com.francode.hotelBackend.domain.entity.Employee;
 import com.francode.hotelBackend.domain.entity.Role;
 import com.francode.hotelBackend.domain.entity.UserApp;
 import com.francode.hotelBackend.exceptions.custom.ValidationException;
+import com.francode.hotelBackend.persistence.repository.JpaEmployeeRepository;
 import com.francode.hotelBackend.persistence.repository.JpaUserRepository;
 import com.francode.hotelBackend.presentation.dto.auth.JwtResponse;
 import com.francode.hotelBackend.presentation.dto.auth.LoginRequest;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,13 +33,15 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final JpaEmployeeRepository jpaEmployeeRepository;
 
     public AuthServiceImpl(JpaUserRepository userRepository, PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+                           AuthenticationManager authenticationManager, JwtUtils jwtUtils, JpaEmployeeRepository jpaEmployeeRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
+        this.jpaEmployeeRepository = jpaEmployeeRepository;
     }
 
     @Override
@@ -86,11 +91,19 @@ public class AuthServiceImpl implements AuthService {
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
+            // Buscar el empleado relacionado si existe
+            Long employeeId = null;
+            Optional<Employee> employeeOptional = jpaEmployeeRepository.findByUserAppId(userDetails.getId());
+            if (employeeOptional.isPresent()) {
+                employeeId = employeeOptional.get().getId();
+            }
+
             return new JwtResponse(
                     jwt,
                     userDetails.getId(),
                     userDetails.getUsername(),
-                    roles);
+                    roles,
+                    employeeId);
         } catch (Exception e) {
             throw new ValidationException("Credenciales inválidas. Por favor, verifique su correo y contraseña.");
         }
